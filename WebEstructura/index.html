@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Bible Contradictions — Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <h1>Bible Contradictions</h1>
+      <p class="subtitle">Explora categorías, filtra y busca contradicciones</p>
+    </div>
+  </header>
+
+  <main class="container main-grid">
+    <aside class="filters">
+      <label>
+        Book:
+        <select id="filter-book">
+          <option value="All">All</option>
+        </select>
+      </label>
+
+      <label>
+        Type:
+        <select id="filter-type">
+          <option value="All">All</option>
+        </select>
+      </label>
+
+      <label>
+        Source:
+        <select id="filter-source">
+          <option value="All">All</option>
+        </select>
+      </label>
+
+      <label>
+        Search:
+        <input id="search" type="search" placeholder="Buscar texto, versículo o palabra">
+      </label>
+
+      <div class="controls">
+        <button id="btn-expand">Expandir todo</button>
+        <button id="btn-collapse">Colapsar todo</button>
+      </div>
+    </aside>
+
+    <section class="content" id="content">
+      <!-- Lista de categorías y items generada por JS -->
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>Plantilla: estructura reproducida para edición. Modifica data en script.js.</small>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
