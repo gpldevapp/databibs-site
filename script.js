@@ -187,6 +187,90 @@ function collapseAll(){
 populateFilterOptions();
 render();
 
+// ----- Arc Diagram / Contradiction Map -----
+function drawViz() {
+  const width = document.getElementById("viz").clientWidth;
+  const height = document.getElementById("viz").clientHeight;
+  const radius = Math.min(width, height) / 2 - 40;
+
+  // datos de ejemplo: nodos = capítulos/libros, links = contradicciones
+  const nodes = [
+    {id: "Genesis 1"},
+    {id: "Genesis 2"},
+    {id: "Exodus 12"},
+    {id: "Matthew 5"},
+    {id: "Matthew 27"},
+    {id: "John 20"}
+  ];
+  const links = [
+    {source: "Genesis 1", target: "Genesis 2"},
+    {source: "Matthew 5", target: "Exodus 12"},
+    {source: "Matthew 27", target: "John 20"},
+    {source: "Genesis 1", target: "John 20"}
+  ];
+
+  const color = d3.scaleOrdinal(d3.schemeCategory10);
+
+  const svg = d3.select("#viz")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+  const g = svg.append("g")
+    .attr("transform", `translate(${width/2},${height/2})`);
+
+  // Distribuir nodos en círculo
+  const angleStep = (2 * Math.PI) / nodes.length;
+  nodes.forEach((d, i) => {
+    d.x = radius * Math.cos(i * angleStep - Math.PI/2);
+    d.y = radius * Math.sin(i * angleStep - Math.PI/2);
+    d.angle = i * angleStep;
+  });
+
+  // Links como arcos de bezier
+  g.selectAll("path.link")
+    .data(links)
+    .join("path")
+    .attr("class", "link")
+    .attr("fill", "none")
+    .attr("stroke", d => color(d.source))
+    .attr("stroke-width", 2)
+    .attr("d", d => {
+      const s = nodes.find(n => n.id === d.source);
+      const t = nodes.find(n => n.id === d.target);
+      const path = d3.path();
+      path.moveTo(s.x, s.y);
+      path.quadraticCurveTo(0, 0, t.x, t.y);
+      return path.toString();
+    })
+    .attr("opacity", 0.6);
+
+  // Dibujar nodos
+  const node = g.selectAll("circle.node")
+    .data(nodes)
+    .join("circle")
+    .attr("class", "node")
+    .attr("r", 6)
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y)
+    .attr("fill", (d,i) => color(d.id));
+
+  // Etiquetas
+  g.selectAll("text.label")
+    .data(nodes)
+    .join("text")
+    .attr("class", "label")
+    .attr("x", d => d.x*1.12)
+    .attr("y", d => d.y*1.12)
+    .attr("text-anchor", "middle")
+    .attr("font-size", 11)
+    .text(d => d.id);
+}
+
+// llamar al render del gráfico
+drawViz();
+
+
 document.getElementById('btn-expand').addEventListener('click', expandAll);
 document.getElementById('btn-collapse').addEventListener('click', collapseAll);
 
