@@ -278,3 +278,10 @@ window._BC_DATA = data;
 document.addEventListener("DOMContentLoaded", () => {
   drawViz();
 });
+
+const vizEl = document.getElementById("viz");
+if (!vizEl) return; // evita el error si no existe
+
+const width = vizEl.clientWidth || 600;
+const height = vizEl.clientHeight || 400;
+
