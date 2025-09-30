@@ -54,3 +54,14 @@ html,body{height:100%; margin:0; background:var(--bg); color:#111}
 .contradictions-list a:hover{text-decoration:underline}
 
 .site-footer{padding:14px 0; color:var(--muted); font-size:13px}
+
+#viz {
+  width: 100%;
+  height: 600px;
+  margin: 20px auto;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(12,18,35,0.06);
+}
+
