@@ -267,12 +267,14 @@ function drawViz() {
     .text(d => d.id);
 }
 
-// llamar al render del gráfico
-drawViz();
-
 
 document.getElementById('btn-expand').addEventListener('click', expandAll);
 document.getElementById('btn-collapse').addEventListener('click', collapseAll);
 
 // Expose data for debugging/edit desde consola
 window._BC_DATA = data;
+
+// llamar al render del gráfico
+document.addEventListener("DOMContentLoaded", () => {
+  drawViz();
+});
