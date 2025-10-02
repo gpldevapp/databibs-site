@@ -189,11 +189,11 @@ render();
 
 // ----- Arc Diagram / Contradiction Map -----
 function drawViz() {
-  const width = document.getElementById("viz").clientWidth;
-  const height = document.getElementById("viz").clientHeight;
-  const radius = Math.min(width, height) / 2 - 40;
+  const vizEl = document.getElementById("viz");
+  const width = vizEl.clientWidth || 800;
+  const height = vizEl.clientHeight || 500;
 
-  // datos de ejemplo: nodos = capítulos/libros, links = contradicciones
+  // datos de ejemplo: nodos = capítulos/libros, links = referencias
   const nodes = [
     {id: "Genesis 1"},
     {id: "Genesis 2"},
@@ -202,6 +202,7 @@ function drawViz() {
     {id: "Matthew 27"},
     {id: "John 20"}
   ];
+
   const links = [
     {source: "Genesis 1", target: "Genesis 2"},
     {source: "Matthew 5", target: "Exodus 12"},
@@ -211,57 +212,71 @@ function drawViz() {
 
   const color = d3.scaleOrdinal(d3.schemeCategory10);
 
+  // limpiar si ya hay un svg anterior
+  d3.select("#viz").selectAll("svg").remove();
+
   const svg = d3.select("#viz")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
 
-  const g = svg.append("g")
-    .attr("transform", `translate(${width/2},${height/2})`);
+  const margin = {left: 40, right: 40, top: 40, bottom: 40};
+  const innerWidth = width - margin.left - margin.right;
+  const innerHeight = height - margin.top - margin.bottom;
 
-  // Distribuir nodos en círculo
-  const angleStep = (2 * Math.PI) / nodes.length;
-  nodes.forEach((d, i) => {
-    d.x = radius * Math.cos(i * angleStep - Math.PI/2);
-    d.y = radius * Math.sin(i * angleStep - Math.PI/2);
-    d.angle = i * angleStep;
+  const g = svg.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  // Escala horizontal: repartir nodos en línea
+  const x = d3.scalePoint()
+    .domain(nodes.map(d => d.id))
+    .range([0, innerWidth])
+    .padding(0.5);
+
+  const baselineY = innerHeight - 30; // línea de base de los nodos
+
+  // asignar coordenadas a cada nodo
+  nodes.forEach(d => {
+    d.x = x(d.id);
+    d.y = baselineY;
   });
 
-  // Links como arcos de bezier
+  // Dibujar arcos
   g.selectAll("path.link")
     .data(links)
     .join("path")
     .attr("class", "link")
     .attr("fill", "none")
     .attr("stroke", d => color(d.source))
-    .attr("stroke-width", 2)
+    .attr("stroke-width", 1.5)
     .attr("d", d => {
       const s = nodes.find(n => n.id === d.source);
       const t = nodes.find(n => n.id === d.target);
-      const path = d3.path();
-      path.moveTo(s.x, s.y);
-      path.quadraticCurveTo(0, 0, t.x, t.y);
-      return path.toString();
+      const x1 = s.x, x2 = t.x;
+      const y = baselineY;
+      const r = Math.abs(x2 - x1) / 2; // radio del arco
+      const sweep = x1 < x2 ? 1 : 0;   // dirección
+      return `M${x1},${y} A${r},${r} 0 0,${sweep} ${x2},${y}`;
     })
-    .attr("opacity", 0.6);
+    .attr("opacity", 0.7);
 
   // Dibujar nodos
-  const node = g.selectAll("circle.node")
+  g.selectAll("circle.node")
     .data(nodes)
     .join("circle")
     .attr("class", "node")
-    .attr("r", 6)
+    .attr("r", 5)
     .attr("cx", d => d.x)
     .attr("cy", d => d.y)
-    .attr("fill", (d,i) => color(d.id));
+    .attr("fill", d => color(d.id));
 
   // Etiquetas
   g.selectAll("text.label")
     .data(nodes)
     .join("text")
     .attr("class", "label")
-    .attr("x", d => d.x*1.12)
-    .attr("y", d => d.y*1.12)
+    .attr("x", d => d.x)
+    .attr("y", d => d.y + 15) // debajo del nodo
     .attr("text-anchor", "middle")
     .attr("font-size", 11)
     .text(d => d.id);
