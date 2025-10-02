@@ -279,8 +279,12 @@ document.addEventListener("DOMContentLoaded", () => {
   drawViz();
 });
 
-const vizEl = document.getElementById("viz");
-if (!vizEl) return; // evita el error si no existe
+function drawViz() {
+  const vizEl = document.getElementById("viz");
+  if (!vizEl) {
+    console.warn("No se encontró el div #viz");
+    return; 
+  }
 
 const width = vizEl.clientWidth || 600;
 const height = vizEl.clientHeight || 400;
