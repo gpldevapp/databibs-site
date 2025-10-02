@@ -276,10 +276,10 @@ function drawViz() {
     .join("text")
     .attr("class", "label")
     .attr("x", d => d.x)
-    .attr("y", d => d.y - 20)   // colocar el punto base justo encima del nodo
+    .attr("y", d => d.y + 20)   // colocar el punto base justo encima del nodo
     .attr("text-anchor", "end") // el texto termina en el punto dado
     .attr("font-size", 11)
-    .attr("transform", d => `rotate(-90, ${d.x}, ${d.y - 20})`)
+    .attr("transform", d => `rotate(-90, ${d.x}, ${d.y + 20})`)
     .text(d => d.id);
 
 }
