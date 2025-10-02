@@ -284,7 +284,7 @@ function drawViz() {
   if (!vizEl) {
     console.warn("No se encontró el div #viz");
     return; 
-  }
-
+    
 const width = vizEl.clientWidth || 600;
 const height = vizEl.clientHeight || 400;
+};
