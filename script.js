@@ -287,4 +287,4 @@ function drawViz() {
     
 const width = vizEl.clientWidth || 600;
 const height = vizEl.clientHeight || 400;
-};
+}};
